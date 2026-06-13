@@ -1,0 +1,63 @@
+[
+  {
+    "id": "TC-001",
+    "question": "Qual o prazo de devolucao?",
+    "expectedCitations": ["POL-001-A"],
+    "forbiddenTerms": ["tier platinum"],
+    "expectInsufficientInfo": false,
+    "customerMetadata": {"tier": "Standard", "region": "Sudeste"},
+    "chunks": [
+      {"id": "POL-001-A", "text": "Prazo de devolucao de mercadorias em ate 7 dias uteis apos recebimento."},
+      {"id": "POL-001-B", "text": "Cargas perigosas nao sao elegiveis no processo padrao."}
+    ]
+  },
+  {
+    "id": "TC-002",
+    "question": "Qual o SLA do cliente Platinum?",
+    "expectedCitations": ["SLA-2024-A"],
+    "forbiddenTerms": ["tier platinum existe"],
+    "expectInsufficientInfo": false,
+    "customerMetadata": {"tier": "Gold", "region": "Sul"},
+    "chunks": [
+      {"id": "SLA-2024-A", "text": "So existem os tiers Gold, Silver e Standard."},
+      {"id": "FAQ-15", "text": "Nao existe tier Platinum na NovaTech."}
+    ]
+  },
+  {
+    "id": "TC-003",
+    "question": "Frete para 300kg para Salvador?",
+    "expectedCitations": [],
+    "forbiddenTerms": ["valor exato"],
+    "expectInsufficientInfo": true,
+    "customerMetadata": {"tier": "Silver", "region": "Nordeste"},
+    "chunks": [
+      {"id": "PROC-042v2-B", "text": "Multiplicadores para frete especial acima de 500kg."}
+    ]
+  },
+  {
+    "id": "TC-004",
+    "question": "Qual o multiplicador para o Sudeste?",
+    "expectedCitations": ["PROC-042v2-B"],
+    "forbiddenTerms": ["1.0 definitivo"],
+    "expectInsufficientInfo": false,
+    "customerMetadata": {"tier": "Gold", "region": "Sudeste"},
+    "chunks": [
+      {"id": "PROC-042v2-B", "text": "Multiplicador atualizado do Sudeste: 1.1."},
+      {"id": "PROC-042-B", "text": "Multiplicador antigo do Sudeste: 1.0."}
+    ]
+  },
+  {
+    "id": "TC-005",
+    "question": "Prazo de devolucao + carga perigosa + frete especial",
+    "expectedCitations": ["POL-001-A", "POL-001-B", "PROC-042v2-A", "PROC-042v2-B"],
+    "forbiddenTerms": ["devolucao padrao permitida para carga perigosa"],
+    "expectInsufficientInfo": false,
+    "customerMetadata": {"tier": "Gold", "region": "Norte"},
+    "chunks": [
+      {"id": "POL-001-A", "text": "Prazo geral de devolucao em ate 7 dias uteis."},
+      {"id": "POL-001-B", "text": "Carga perigosa nao elegivel no processo padrao."},
+      {"id": "PROC-042v2-A", "text": "Formula atualizada do frete especial acima de 500kg."},
+      {"id": "PROC-042v2-B", "text": "Multiplicadores regionais atualizados."}
+    ]
+  }
+]
