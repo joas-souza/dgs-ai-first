@@ -1,0 +1,39 @@
+
+> novatech-assistant@0.1.0 mcp:health
+> node scripts/mcp-health-check.mjs
+
+MCP Health Check — C:\SIG\Treinamentos\ia-first-dgs\dgs-ai-first\cenario-2\novatech-assistant\.mcp\mcp.json
+
+Verificando "filesystem" (npx -y @modelcontextprotocol/server-filesystem ./src ./specs ./skills ./docs/novatech ./docs/adr ./docs/runbooks ./data/retrieval-corpus)... OK
+  - ./src: OK
+  - ./specs: OK
+  - ./skills: OK
+  - ./docs/novatech: OK
+  - ./docs/adr: OK
+  - ./docs/runbooks: OK
+  - ./data/retrieval-corpus: OK
+  - tools: read_file, read_text_file, read_media_file, read_multiple_files, write_file, edit_file, create_directory, list_directory, list_directory_with_sizes, directory_tree, move_file, search_files, get_file_info, list_allowed_directories
+  - resources: (nenhum)
+
+Verificando "git" (uvx mcp-server-git --repository .)... INDISPONÍVEL
+  - motivo: MCP error -32000: Connection closed
+
+Verificando "memory" (npx -y @modelcontextprotocol/server-memory)... OK
+  - tools: create_entities, create_relations, add_observations, delete_entities, delete_observations, delete_relations, read_graph, search_nodes, open_nodes
+  - resources: (nenhum)
+
+Verificando "everything" (npx -y @modelcontextprotocol/server-everything)... OK
+  - tools: echo, get-annotated-message, get-env, get-resource-links, get-resource-reference, get-structured-content, get-sum, get-tiny-image, gzip-file-as-resource, toggle-simulated-logging, toggle-subscriber-updates, trigger-long-running-operation, simulate-research-query
+  - resources: demo://resource/static/document/architecture.md, demo://resource/static/document/extension.md, demo://resource/static/document/features.md, demo://resource/static/document/how-it-works.md, demo://resource/static/document/instructions.md, demo://resource/static/document/startup.md, demo://resource/static/document/structure.md
+
+Resumo:
+  OK            filesystem
+  INDISPONÍVEL  git
+  OK            memory
+  OK            everything
+
+Nota: saída regravada após correção pós-avaliação (estreitamento do escopo do `filesystem`
+de `./docs ./data` para `./docs/novatech ./docs/adr ./docs/runbooks ./data/retrieval-corpus`).
+A execução acima confirma cada uma das 4 pastas individualmente, incluindo `docs/novatech`
+especificamente, como o enunciado pede. `git` permanece INDISPONÍVEL nesta máquina por falta
+de `uv`/`uvx` — mesmo caso real documentado em 03-plano-contingencia.md.
