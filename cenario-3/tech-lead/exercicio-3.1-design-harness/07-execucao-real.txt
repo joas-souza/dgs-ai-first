@@ -1,0 +1,58 @@
+$ npx tsx 06-demo-source-verifier.ts
+(executado em 2026-07-04T00:24:32Z, node v22.23.1)
+
+Documentos válidos: POL-001, PROC-042, PROC-042-v2, SLA-2024, FAQ-Atendimento
+
+[OK] PS#1 — prazo de devolução standard
+  fonte citada: "POL-001"
+  resultado: suspicious=false
+  nota: fonte válida e correta (POL-001 existe e cobre devolução)
+
+[OK] PS#2 — SLA cliente Silver
+  fonte citada: "SLA-2024"
+  resultado: suspicious=false
+  nota: fonte válida
+
+[OK] PS#3 — devolução de carga perigosa
+  fonte citada: "POL-001"
+  resultado: suspicious=false
+  nota: fonte válida
+
+[OK] PS#4 — política de carga danificada (ALUCINAÇÃO)
+  fonte citada: "Nenhuma"
+  resultado: suspicious=true (source_document "Nenhuma" não consta na lista de documentos válidos da NovaTech (POL-001, PROC-042, PROC-042-v2, SLA-2024, FAQ-Atendimento))
+  nota: não existe documento sobre isso na base — o modelo inventou a fonte; o verifier pega porque 'Nenhuma' não está na lista
+
+[OK] PS#5 — SLA tier Enterprise (não documentado)
+  fonte citada: null
+  resultado: suspicious=true (source_document ausente ou vazio na resposta)
+  nota: sem fonte citada — o modelo reconheceu a lacuna corretamente, mas o verifier ainda marca como suspeito para forçar revisão (correto: baixa confiança deve passar por HITL de qualquer forma)
+
+[OK] PS#6 — carga perigosa com frete expresso (fonte informal)
+  fonte citada: "FAQ-Atendimento"
+  resultado: suspicious=false
+  nota: LIMITAÇÃO CONHECIDA: FAQ-Atendimento está na lista de documentos válidos (existe de fato), então o verifier não marca suspeito — mas o Product Specialist já identificou essa resposta como problemática por OUTRO motivo (fonte informal demais para um tema de compliance). Este verifier só prova que a fonte EXISTE, não que é a fonte ADEQUADA para o tema. Esse segundo julgamento continua sendo humano ou de um guardrail de conteúdo mais específico.
+
+[OK] Fonte inventada fora da lista
+  fonte citada: "REGRA-INTERNA-999"
+  resultado: suspicious=true (source_document "REGRA-INTERNA-999" não consta na lista de documentos válidos da NovaTech (POL-001, PROC-042, PROC-042-v2, SLA-2024, FAQ-Atendimento))
+  nota: documento não existe na NovaTech
+
+[OK] Fonte com sufixo de seção (formato pré-structured-output)
+  fonte citada: "POL-001, seção 3.2"
+  resultado: suspicious=true (source_document "POL-001, seção 3.2" não consta na lista de documentos válidos da NovaTech (POL-001, PROC-042, PROC-042-v2, SLA-2024, FAQ-Atendimento))
+  nota: hoje (texto livre) o modelo às vezes anexa a seção ao identificador; o verifier faz match exato contra o ID curto e marca como suspeito. Isso não é bug do verifier — é o motivo pelo qual o schema Zod do structured output (Dev 3.1) precisa normalizar `source_document` para conter SÓ o identificador curto antes desta checagem.
+
+[OK] [bug da v1] ID válido embutido em documento inventado
+  fonte citada: "PROC-042-v2-RASCUNHO-INTERNO-NAO-REVISADO"
+  resultado: suspicious=true (source_document "PROC-042-v2-RASCUNHO-INTERNO-NAO-REVISADO" não consta na lista de documentos válidos da NovaTech (POL-001, PROC-042, PROC-042-v2, SLA-2024, FAQ-Atendimento))
+  nota: a v1 do Copilot (03-source-verifier-v1-copilot.ts) usava correspondência por substring e aprovava este caso como válido só por conter 'PROC-042-v2'. A v2 (match exato) marca corretamente como suspeito — ver 04-code-review-v1.md.
+
+[OK] [bug da v1] frase qualquer contendo um ID real
+  fonte citada: "Baseado em POL-001 mas na verdade inventei o resto"
+  resultado: suspicious=true (source_document "Baseado em POL-001 mas na verdade inventei o resto" não consta na lista de documentos válidos da NovaTech (POL-001, PROC-042, PROC-042-v2, SLA-2024, FAQ-Atendimento))
+  nota: mesmo bug: a v1 aprovava qualquer texto que mencionasse 'POL-001' em algum ponto. É o caso mais grave encontrado no code review, porque anularia a verificação para respostas com fonte fabricada mas que citam um ID real de passagem.
+
+10/10 casos bateram com o esperado.
+
+exit code: 0
